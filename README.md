@@ -1,17 +1,24 @@
-Analysis of School District ABC and how removing tampered scores affects analysis outcome.
-Python can be used to summarize the School Districts metrics(Math Scores and Reading Scores) multiple ways to draw correlations such as how does school size, school budget, and school type affect said metrics.  Specific to this Analysis is an incident of unauthorzid alterations made to the Math and Reading scores for Thomas High School. These scores have been replaced with NaNs(Not a Number)
+# Analysis of School District ABC and how removing tampered scores affects analysis outcome.
 
+### Implementation of requested changes
+Python can be used to summarize the School Districts metrics(Math Scores and Reading Scores) multiple ways to draw correlations such as, how does school size, school budget, and school type affect said metrics.  Specific to this Analysis is an incident of unauthorzid alterations made to the Math and Reading scores for Thomas High School. These scores have been replaced with NaNs(Not a Number) as requested with the following code
+```
+student_data_df.loc[(student_data_df["school_name"]=="Thomas High School") & (student_data_df["grade"]=="9th"),"math_score"] = np.nan
+```
 After removing these scores, the summaries had to be recalculated.  
-In order to perform the requested adjustments, code changes were immplemented shown below
+In order to perform the requested adjustments, code changes were immplemented (shown below)
 1. get an adjusted student count
----code---
+<!-- code -->
+```
 # Subtract the number of students that are in ninth grade at 
 # Thomas High School from the total student count to get the new total student count.
 adj_student_count = student_count - students_nograde
--end code-
+```
+<!-- end code -->
 
 2. Recalc passing averages with adjusted student count.
----code---
+<!-- code -->
+```
 # Calculate the passing percentages with the new total student count.
 passing_math_percentage = passing_math_count / adj_student_count * 100
 passing_reading_percentage = passing_reading_count / adj_student_count * 100
@@ -21,18 +28,22 @@ passing_math_reading = school_data_complete_df[(school_data_complete_df["math_sc
 overall_passing_math_reading_count = passing_math_reading["student_name"].count()
 # Calculate the overall passing percentage with new total student count.
 overall_passing_percentage = overall_passing_math_reading_count / adj_student_count * 100
--end code-
+```
+<!-- end code -->
 
 3. get the dataset that is Thomas High School, but NOT the removed scores.
----code---
+<!-- code -->
+```
 # Get the number of 10th-12th graders from Thomas High School (THS).
 THS_df = school_data_complete_df[(school_data_complete_df["school_name"] == "Thomas High School") 
                         & pd.notna(school_data_complete_df["reading_score"])]
--end code-
+```
+<!-- end code -->
 
 
 4. Using this THS dataset perform calculations 
----code---
+<!-- code -->
+```
 per_THS_counts = THS_df.count()["student_name"]
 # Get all the students passing math from THS
 THS_passing_math = THS_df[(THS_df["math_score"]>=passing_grade)]
@@ -52,13 +63,22 @@ per_school_summary_df.loc["Thomas High School","% Passing Math"] = THS_passing_m
 per_school_summary_df.loc["Thomas High School","% Passing Reading"] = THS_passing_reading_percentage
 # Replace the overall passing percentage for Thomas High School in the per_school_summary_df.
 per_school_summary_df.loc["Thomas High School","% Overall Passing"] = THS_passing_overall_percentage
--end code-
+```
+<!-- end code -->
 
 
+### Resulting differences in Analysis measurements
 
 In the following 7 images, the old summary is above, and the new is below.
 Image 1,2,3,4,5,6,7
-
+![alt text](Resources/01_District_Summary_DataFrame.png)
+![alt text](Resources/02_School_Summary_DataFrame.png)
+![alt text](Resources/03_04_High_and_Low_Performing_Schools.png)
+![alt text](Resources/05_Average_Math_Score Summary.png)
+![alt text](Resources/06_Average_Reading_Score_Summary.png)
+![alt text](Resources/07_Student_Scores_by_School_Spending.png)
+![alt text](Resources/08_Scores_by_School_Size.png)
+![alt text](Resources/09_Scores_by_School_Type.png)
 
 
 It is apparent there are very little differences, but they can be summarized as follows
