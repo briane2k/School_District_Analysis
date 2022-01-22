@@ -1,13 +1,13 @@
 # Analysis of School District ABC and how removing tampered scores affects analysis outcome.
 
 ### Implementation of requested changes
-Python can be used to summarize the School Districts metrics(Math Scores and Reading Scores) multiple ways to draw correlations such as, how does school size, school budget, and school type affect said metrics.  Specific to this Analysis is an incident of unauthorzid alterations made to the Math and Reading scores for Thomas High School. These scores have been replaced with NaNs(Not a Number) as requested with the following code
+Python can be used to summarize the School Districts metrics (Math Scores and Reading Scores) multiple ways to draw correlations such as, how does school size, school budget, and school type affect said metrics.  Specific to this Analysis is an incident of unauthorized alterations made to the Math and Reading scores for Thomas High School. These scores have been replaced with NaNs(Not a Number) as requested with the following code
 ```
 student_data_df.loc[(student_data_df["school_name"]=="Thomas High School") & (student_data_df["grade"]=="9th"),"math_score"] = np.nan
 ```
 After removing these scores, the summaries had to be recalculated.  
-In order to perform the requested adjustments, code changes were immplemented (shown below)
-1. get an adjusted student count
+In order to perform the requested adjustments, code changes were implemented (shown below)
+1. Get an adjusted student count
 <!-- code -->
 ```
 # Subtract the number of students that are in ninth grade at 
@@ -16,7 +16,7 @@ adj_student_count = student_count - students_nograde
 ```
 <!-- end code -->
 
-2. Recalc passing averages with adjusted student count.
+2. Recalculate passing averages with adjusted student count.
 <!-- code -->
 ```
 # Calculate the passing percentages with the new total student count.
@@ -31,7 +31,7 @@ overall_passing_percentage = overall_passing_math_reading_count / adj_student_co
 ```
 <!-- end code -->
 
-3. get the dataset that is Thomas High School, but NOT the removed scores.
+3. Get the dataframe that is Thomas High School, but NOT the removed scores.
 <!-- code -->
 ```
 # Get the number of 10th-12th graders from Thomas High School (THS).
@@ -41,7 +41,7 @@ THS_df = school_data_complete_df[(school_data_complete_df["school_name"] == "Tho
 <!-- end code -->
 
 
-4. Using this THS dataset perform calculations 
+4. Using this THS(Thomas High School) dataframe perform calculations 
 <!-- code -->
 ```
 per_THS_counts = THS_df.count()["student_name"]
@@ -70,25 +70,35 @@ per_school_summary_df.loc["Thomas High School","% Overall Passing"] = THS_passin
 ### Resulting differences in Analysis measurements
 
 In the following 7 images, the old summary is above, and the new is below.
-Image 1,2,3,4,5,6,7
-![alt text](Resources/01_District_Summary_DataFrame.png)
-![alt text](Resources/02_School_Summary_DataFrame.png)
-![alt text](Resources/03_04_High_and_Low_Performing_Schools.png)
-![alt text](Resources/05_Average_Math_Score Summary.png)
-![alt text](Resources/06_Average_Reading_Score_Summary.png)
-![alt text](Resources/07_Student_Scores_by_School_Spending.png)
-![alt text](Resources/08_Scores_by_School_Size.png)
-![alt text](Resources/09_Scores_by_School_Type.png)
 
+Image 01_District_Summary_DataFrame
+![Image 1](Resources/01_District_Summary_DataFrame.png)
+Image 02_School_Summary_DataFrame
+![Image 2](Resources/02_School_Summary_DataFrame.png)
+Image 03_04_High_and_Low_Performing_Schools
+![Image 3_4](Resources/03_04_High_and_Low_Performing_Schools.png)
+Image 05_Average_Math_Score_Summary
+![Image 5](Resources/05_Average_Math_Score_Summary.png)
+Image 06_Average_Reading_Score_Summary
+![Image 6](Resources/06_Average_Reading_Score_Summary.png)
+Image 07_Student_Scores_by_School_Spending
+![Image 7](Resources/07_Student_Scores_by_School_Spending.png)
+Image 08_Scores_by_School_Size
+![Image 8](Resources/08_Scores_by_School_Size.png)
+Image 09_Scores_by_School_Type
+![Image 9](Resources/09_Scores_by_School_Type.png)
 
-It is apparent there are very little differences, but they can be summarized as follows
-*District Summary: Average Math Score; From 79.0 to 78.9[also not highlighted, but here it shows student count goes from 39,170 to 38,709(a decrease of 461 or 1.1769%]
-*School Summary: Thomas High School(Average Reading Score); From 83.8 to 83.9
-*High and Low Performing: Thomas High School(Average Reading Score); From 83.8 to 83.9
-*Average MATH Score by HS/Grade(Thomas High School); From 83.6 to =0= (This is expected, these are the removed scores)
-*Average READING Score by HS/Grade(Thomas High School); From 83.7 to =0= (This is expected, these are the removed scores)
-*Student Scores by School Spending(Thomas High School/Math); From 83.8 to 83.9
+### Summary of differences in Analysis measurements
+Four Distinct differences can be summarized as follows:
+1. District Summary: Average Math Score; From 79.0 to 78.9
+<BR>&nbsp;&nbsp;&nbsp;[also not highlighted, but here it shows student count goes from 39,170 to 38,709(a decrease of 461 or 1.1769%]
+2. School Summary: Thomas High School (Average Reading Score); From 83.8 to 83.9
+3. High and Low Performing: Thomas High School (Average Reading Score); From 83.8 to 83.9
+4. Student Scores by School Spending (Thomas High School/Math); From 83.8 to 83.9
 
-*No change was apparent in the Score by School Size
-*No change was apparent in the Score by School Type
+Additional points of less importance:
+<BR>&nbsp;&nbsp;&nbsp;5. Average MATH Score by HS/Grade (Thomas High School); From 83.6 to =0= (This is expected, these are the removed scores)
+<BR>&nbsp;&nbsp;&nbsp;6. Average READING Score by HS/Grade (Thomas High School); From 83.7 to =0= (This is expected, these are the removed scores)
+<BR>&nbsp;&nbsp;&nbsp;7. No change was apparent in the Score by School Size
+<BR>&nbsp;&nbsp;&nbsp;8. No change was apparent in the Score by School Type
 
